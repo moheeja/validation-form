@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Validation Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 350px;
+            max-width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: red;
+            font-size: 0.875em;
+            display: block;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <h1>Card Information</h1>
+        <form id="cardForm">
+            <label for="cardNumber">Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456">
+            <span class="error" id="cardNumberError"></span>
+
+            <label for="cardName">Cardholder Name:</label>
+            <input type="text" id="cardName" name="cardName" placeholder="John Doe">
+            <span class="error" id="cardNameError"></span>
+
+            <label for="expiryDate">Expiration Date:</label>
+            <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY">
+            <span class="error" id="expiryDateError"></span>
+
+            <label for="cvv">CVV:</label>
+            <input type="number" id="cvv" name="cvv" placeholder="123">
+            <span class="error" id="cvvError"></span>
+
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('cardForm');
+            const cardNumberInput = document.getElementById('cardNumber');
+            const cardNameInput = document.getElementById('cardName');
+            const expiryDateInput = document.getElementById('expiryDate');
+            const cvvInput = document.getElementById('cvv');
+            
+            const cardNumberError = document.getElementById('cardNumberError');
+            const cardNameError = document.getElementById('cardNameError');
+            const expiryDateError = document.getElementById('expiryDateError');
+            const cvvError = document.getElementById('cvvError');
+            
+            form.addEventListener('submit', function(event) {
+                let valid = true;
+
+                // Clear previous errors
+                cardNumberError.textContent = '';
+                cardNameError.textContent = '';
+                expiryDateError.textContent = '';
+                cvvError.textContent = '';
+
+                // Validate Card Number (Simple Luhn check for validity)
+                const cardNumber = cardNumberInput.value.replace(/\s+/g, '');
+                if (!/^\d{16}$/.test(cardNumber)) {
+                    cardNumberError.textContent = 'Card number must be 16 digits.';
+                    valid = false;
+                }
+
+                // Validate Cardholder Name
+                if (cardNameInput.value.trim() === '') {
+                    cardNameError.textContent = 'Cardholder name is required.';
+                    valid = false;
+                }
+
+                // Validate Expiration Date
+                const expiryDate = expiryDateInput.value.split('/');
+                if (expiryDate.length !== 2 || !/^\d{2}$/.test(expiryDate[0]) || !/^\d{2}$/.test(expiryDate[1])) {
+                    expiryDateError.textContent = 'Expiration date must be in MM/YY format.';
+                    valid = false;
+                }
+
+                // Validate CVV
+                if (!/^\d{3}$/.test(cvvInput.value)) {
+                    cvvError.textContent = 'CVV must be 3 digits.';
+                    valid = false;
+                }
+
+                // Prevent form submission if validation fails
+                if (!valid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
